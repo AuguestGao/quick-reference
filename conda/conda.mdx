@@ -1,0 +1,80 @@
+# Conda Guide
+
+## Anacodna and Miniconda
+
+Anaconda has GUI and install many popular packages along with the installation of Anaconda. Miniconda is the light version of Anaconda which does not have a GUI and has barely no pre-install packages. This guide is focus on miniconda using the conda prompt.
+
+## Create an virtual environment
+
+### Default env location
+
+```bash
+conda create --name env_name python=3.8
+conda activate env_name
+conda deactivate
+conda remove --name env_name --all
+```
+
+### Specify env location
+
+```bash
+conda create --prefix /path/to/folder/env_name python=3.7
+conda activate /path/to/folder/env_name
+codna deactivate
+conda remove --prefix /path/to/folder/env_name --all
+```
+
+## Packages and channels
+
+Channels are like source where conda can fetch packages from. By default, conda will fetch from default channel, [see all packages included in the default channel](https://repo.anaconda.com/pkgs/main/).
+
+1. Create and activate a virtual env first before installing any packages
+2. Install a package using below method according to the situation
+
+### packages in the default channel
+
+simply install via `conda install package_name`
+If installation fails due to the package cannot be found. There is a chance that the package is not included in the default channel (see below).
+
+### Install package from a specified channels
+
+One time use, this channel won't be added in the channel list, need to run the same code next time
+
+`conda install -c channel_name package_name`
+
+for exmaple, `conda install -c conda-forge fnn`
+
+### Add channel into conda channel list
+
+Add channel to the conda channel list.
+
+```
+conda config -add channels channel_name
+conda install package_name
+```
+
+For future, only run `conda install package_name`
+
+Using conda-forge as an example.
+
+[Conda forge](https://conda-forge.org/) is a community led conda packages repo where can be added as a channel.
+
+```
+conda config --add channels conda-forge
+conda install <package-name>
+```
+
+## Other Common conda command
+
+- check all env names: `conda env list`
+- check conda package channels: `conda config --show channels`
+- update a package: `conda update package_name`
+  note: see conda cheatsheet for more commands.
+
+## requirements.txt in conda environement
+
+1. make sure the env is activated
+2. to generate file
+   2.1. `conda install pip`
+   2.2. `pip freeze > requirements.txt`
+3. to install packages `pip install -r reqirements.txt`

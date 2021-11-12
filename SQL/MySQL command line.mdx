@@ -1,0 +1,28 @@
+# MySQL command line guide
+
+## use MySQL command line client
+
+enter password
+
+| command                 | meaning                                               |
+| ----------------------- | ----------------------------------------------------- |
+| `show databases`        | show database                                         |
+| `use db_name`           | connect to database                                   |
+| `show tables`           | show tables in this database                          |
+| `drop table table_name` | delete table, see details for table with foreign keys |
+| `drop database db_name` | delete database                                       |
+
+## drop a table with foreign keys
+
+1. method 1
+   for tables with being referenced by others: drop table in order: remove the one without being referenced first and walk backwards
+
+2. method 2
+
+```sql
+SET FOREIGN_KEY_CHECKS = 0;
+drop table if exists customers;
+drop table if exists orders;
+drop table if exists order_details;
+SET FOREIGN_KEY_CHECKS = 1;
+```

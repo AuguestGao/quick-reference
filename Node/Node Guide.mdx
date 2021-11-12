@@ -1,0 +1,128 @@
+# Node Guide
+
+## Node Basics
+
+    1. Node is a JavaScript runtime environment (not a programming language, not a framework).
+    2. Node is built on chrome V8 engine.
+    3. Node allows executing/running JS code outside of a web browser.
+    4. Node combines libuv for async I/O support
+
+5. Node is mostly used in developing backend
+6. Type in `node` in terminal to open Node.Js REPL(read, evaluate, print, loop) for writing JS code, `ctrl + c OR .exit` to exit
+
+## Basic setup
+
+1. `mkdir and cd`
+2. `npm init` or `npm init -y` to ignore prompts
+3. `npm nodemon --save-dev`
+4. to use nodemon. add below to scripts in package.json, change entry file coordingly
+
+```json
+"start": "node src/app.js",
+"dev": "nodemon src/app.js"
+```
+
+## Express
+
+1. `npm i express`
+2. in app.js
+
+```JavaScript
+const path = require("path");
+const express = require("express");
+
+const app = express();
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+  console.log("Server is running at " + port);
+});
+
+app.get("/add", (req, res) => {
+  console.log(req);
+  res.send(null);
+});
+```
+
+## MongoDB
+
+1. install mongodb to OS
+   1. download bin from mongodb community server from website
+   2. unzip, rename, and move to /user/auguest
+   3. create a `mongodb-data` to store mongodb data
+2. start database server, in my windows `/Users/Auguest/mongodb/bin/mongod.exe --dbpath=/Users/Auguest/mongodb-data`
+3. `npm i mongodb` to install mongodb driver for node
+4. create database and collections in mongodb compass GUI
+5. add following code to connect database
+
+```JavaScript
+const mongodb = require("mongodb");
+const client = mongodb.MongoClient;
+
+const url = "mongodb://127.0.0.1:27017";
+const dbName = "vivid-journal";
+
+client.connect(
+  url,
+  { useNewUrlParser: true }, // old browser support
+  (error, client) => {
+    if (error) {
+      return console.log("unable to connect database", error);
+    }
+    console.log("Database connected!");
+
+    const db = client.db(dbName);
+
+    //CRUD methods here
+
+    // example insert
+    db.collection("entries").insertOne({
+      date: "2021-10-25",
+      content: "start building vivid journal app",
+    });
+  }
+);
+
+```
+
+### use with Mongoose
+
+Mongoose makes it easy to model and manage your application data. This includes data sanitization, data validation, and more. Mongoose will serve as a replacement for the native driver, providing you with a more object-oriented interface.
+
+1. `npm i mongoose`
+2. setup
+
+```JavaScript
+const mongoose = require("mongoose");
+mongoose.connect("mongodb://127.0.0.1:27017/vivid-journal", {
+  useNewUrlParser: true,
+});
+
+// create model
+const Entry = mongoose.model("Entries", {
+  title: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  content: {
+    type: String,
+    // validate(value) { // 3rd party
+    //   // code here
+    // }
+  },
+});
+
+const entry1 = new Entry({
+  title: "First entry 2",
+  content: "this is the first every entry 2",
+});
+
+entry1
+  .save()
+  .then(() => console.log(entry1))
+  .catch((err) => {
+    console.log("error: ");
+  });
+```

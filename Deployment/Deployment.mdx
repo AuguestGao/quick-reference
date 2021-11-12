@@ -1,0 +1,27 @@
+# Deployment Guide
+
+## Deploy NodeJs App to **<u>Heroku</u>** via Git/Github
+
+1. download and install [Heroku cli](https://devcenter.heroku.com/articles/heroku-cli)
+2. sign up with heroku
+3. `heroku login` to login Heroku via a pop up browser window
+4. make sure the start script is present in the package.json
+5. git ready
+   1. if not init git yet, do the following
+      1. `git init`
+      2. create `.gitignore` and add ignored files `file-name.ext` and folders `folder-name`
+   2. stage changes and commit
+   ```bash
+   git add .
+   git commit -m 'commit message'
+   ```
+6. push to Github
+   1. create a repo in github
+   2. following the code provided for pushing to github
+7. deploy to Heroku
+   1. `heroku create app-name` _app-name must be unique across all heroku site, use **auguest-app-name** pattern_
+   2. _[optional]: set and unset(remove) heroku environment variables if required_
+      1. `heroku config:set key1=value1 key2=value2` to add pair, seperate by space
+      2. use `heroku config` to check current pairs
+      3. `herokuconfig:unset key` to remove pair
+   3. `git push heroku main` for deploying

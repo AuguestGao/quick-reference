@@ -1,0 +1,80 @@
+# Jupyter Notebook Guide
+
+## Installation Jupyter Notebook
+
+<div style={{ fontSize: "20px", color: "tomato" }}>
+  Check conda guide for virtual environment installation and usage
+</div>
+
+1. install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/products/individual#Downloads)
+2. Activate env
+3. in **anaconda prompt**, install jupyter notebook `conda install jupyter`
+
+## Launch
+
+1. cd to desired folder (having the notebook or where you want ot create one)
+2. `jupyter notebook` to start the server (leave the prompt running)
+
+_note: for start a new notebook in a newly created env, see below section._
+
+## Use Jupyter Notebook in an virtual env
+
+Before you are about to launch a notebook in your newly created env, you must create a new jupyter kernel for it to work.
+
+### Why do I need this kernel thing?
+
+Basically, jupyter needs its kernel (IPython) to run!
+
+See Jupyter official explaination about the kernel below.
+
+> Kernels are programming language specific processes that run independently and interact with the Jupyter Applications and their user interfaces. **IPython** is the reference Jupyter kernel, providing a powerful environment for interactive computing in Python. -- Jupyter Website
+
+### Create a new kernel
+
+1. (maybe) Install IPython: Ipython should be installed automatically along with the installtion of jupyter. However, if you need to install it manually:
+   `pip install ipython`
+
+2. Install a new kernel using new environment
+   `ipython kernel install -user -name=name_of_kernel`
+
+   - list all kernels: `jupyter kernelspec list`
+   - uninstall a kernel: `jupyter kernelspec uninstall name_of_kernel`
+
+3. Launch the notebook `jupyter notebook` and choose `new > name_of_kernel` for a fresh notebook
+
+## Format
+
+### Enable line wrap
+
+Found it is annoying for scolling left and right for the line of code with 1000 chars? You can enable auto wrap in 30 secs as below.
+
+1. Locate .jupyter directory, don't where it is? `jupyter --config-dir` to check
+2. open .jupyter/nbconfig/notebook.json add `"lineWrapping": true`, save and done!
+
+Below is my config, I specified using lineNumbers and lineWrapping only in code cells but keep markdown cells untouched.
+
+```json
+{
+  "MarkdownCell": {
+    "cm_config": {
+      "lineNumbers": false
+    }
+  },
+  "CodeCell": {
+    "cm_config": {
+      "lineNumbers": true,
+      "lineWrapping": true
+    }
+  }
+}
+```
+
+### Use Code Formatter
+
+You can use code formatter to format your code, which it is a better option in my opinion. I use black, but there are also yapf available.
+
+1. install nb_black
+   - if conda-forge in the conda channel: `conda install nb_black`
+   - if conda-forge not in the channel: `conda install -c conda-forge black`
+2. in jupyter notebook, add `%load_ext nb_black` on the very top as a code cell and run it once.
+3. to use, re-execute the cell you want to format.

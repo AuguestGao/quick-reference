@@ -1,0 +1,233 @@
+# MySQL and Python
+
+## Installation and imports
+
+1. download and install [MySQL community server MSI installer](https://dev.mysql.com/downloads/windows/installer/8.0.html) for free and install it, [see installation guide here](https://www.youtube.com/watch?v=2HQC94la6go)
+2. setup and activate a venv, and install mysql connector python
+   `pip install mysql-connector-python` or `cona
+3. import
+
+```python
+import mysql.connector
+from mysql.connector import Error
+# import the Error function separately so that we have easy access
+```
+
+## connect to MySQL
+
+### no specific database
+
+```python
+def create_server_connection(host_name, user_name, user_password):
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password
+        )
+        print("MySQL Database connection successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+    return connection
+
+# create server
+connection = create_server_connection("localhost", "root", pw)
+```
+
+_see create database in next section_
+
+### specified database
+
+```python
+def create_server_connection(host_name, user_name, user_password, db_name):
+	connection = None # closes existing connections if there is
+	try:
+		connection = mysql.connector.connect(
+			host = host_name,
+			user = user_name,
+			passwd = user_password,
+			database = db_name # use create_database to create db
+		)
+		print("MySQL DB connected successfully.")
+	except Error as err:
+		print(f"ErrorL '{err}'")
+	return connection #return connection obj
+
+connection = create_server_connection('localhost', 'root', password, 'school') # connect to "school" database
+```
+
+## create a database
+
+```python
+def create_database(connection, query):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        print("Database created successfully")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+create_database_query = "CREATE DATABASE school"
+create_database(connection, create_database_query)
+```
+
+## create table
+
+execute_query is a reusable function to handle queries
+
+```python
+def execute_query(connection, query):
+	cursor = connection.cursor()
+	try:
+		cursor.execute(query)
+		connection.commit() # use this after modifying db
+		print("Query successful")
+	except Error as err:
+		print(f'Error: "{err}"')
+
+create_teacher_table = """
+CREATE TABLE teacher (
+  teacher_id INT PRIMARY KEY,
+  first_name VARCHAR(40) NOT NULL,
+  last_name VARCHAR(40) NOT NULL,
+  language_1 VARCHAR(3) NOT NULL,
+  language_2 VARCHAR(3),
+  dob DATE,
+  tax_id INT UNIQUE,
+  phone_no VARCHAR(20)
+  );
+ """
+
+execute_query(connection, create_teacher_table) # execute query
+```
+
+### add foreign keys
+
+```python
+alter_participant = """
+ALTER TABLE participant
+ADD FOREIGN KEY(client)
+REFERENCES client(client_id)
+ON DELETE SET NULL;
+"""
+
+execute_query(connection, alter_participant)
+```
+
+### create table to handle many-to-many relationships b/w participant and courses tables
+
+```python
+create_takescourse_table = """
+CREATE TABLE takes_course (
+  participant_id INT,
+  course_id INT,
+  PRIMARY KEY(participant_id, course_id),
+  FOREIGN KEY(participant_id) REFERENCES participant(participant_id) ON DELETE CASCADE,
+  FOREIGN KEY(course_id) REFERENCES course(course_id) ON DELETE CASCADE
+);
+"""
+# ON DELETE CASCADE: delete children when parent are deleted
+
+execute_query(connection, create_takescourse_table)
+```
+
+### populate a table
+
+```python
+pop_teacher = """
+INSERT INTO teacher VALUES
+(1,  'James', 'Smith', 'ENG', NULL, '1985-04-20', 12345, '+491774553676'),
+(2, 'Stefanie',  'Martin',  'FRA', NULL,  '1970-02-17', 23456, '+491234567890'),
+(3, 'Steve', 'Wang',  'MAN', 'ENG', '1990-11-12', 34567, '+447840921333'),
+(4, 'Friederike',  'Müller-Rossi', 'DEU', 'ITA', '1987-07-07',  45678, '+492345678901'),
+(5, 'Isobel', 'Ivanova', 'RUS', 'ENG', '1963-05-30',  56789, '+491772635467'),
+(6, 'Niamh', 'Murphy', 'ENG', 'IRI', '1995-09-08',  67890, '+491231231232');
+"""
+
+execute_query(connection, pop_teacher)
+```
+
+## read data
+
+```python
+def read_query(connection, query):
+	cursor = connection.cursor()
+	result = None
+  # need no connection.commit() for db is not modified
+	try:
+		cursor.execute(query)
+		result = cursor.fetchall()
+		return result
+	except Error as err:
+		print(f'Error "{err}"')
+
+q = """
+SELECT *
+FROM teacher;
+"""
+
+results = read_query(connection, q) # a list of tuples
+
+for result in results:
+  print(result)
+```
+
+## update data
+
+```python
+update = """
+UPDATE client
+SET address = '23 Fingiertweg, 14534 Berlin'
+WHERE client_id = 101;
+"""
+
+execute_query(connection, update)
+```
+
+## deleta record
+
+```python
+
+delete_course = """
+DELETE FROM course
+WHERE course_id = 20;
+"""
+
+execute_query(connection, delete_course)
+```
+
+## insert many records
+
+```python
+def execute_list_query(connection, sql, vals):
+    cursor = connection.cursor()
+    try:
+        cursor.executemany(sql, vals)
+        connection.commit()
+        print("Query successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+# sql command
+sql = '''
+    INSERT INTO teacher (teacher_id, first_name, last_name, language_1, language_2, dob, tax_id, phone_no)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+    '''
+# note %s above is the placeholder for SQL, not for python, used for all kinds SQL data types
+
+# insert these values
+vals = [
+	(7, 'Hank', 'Dodson', 'ENG', None, '1991-12-23', 11111, '+491772345678'),
+	(8, 'Sue', 'Perkins', 'MAN', 'ENG', '1976-02-02', 22222, '+491443456432')
+]
+
+execute_list_query(connection, sql, vals)
+```
+
+## Reference
+
+- https://www.freecodecamp.org/news/connect-python-with-sql/
+- https://towardsdatascience.com/designing-a-relational-database-and-creating-an-entity-relationship-diagram-89c1c19320b2
+- https://github.com/thecraigd/Python_SQL
