@@ -6,7 +6,7 @@ Anaconda has GUI and install many popular packages along with the installation o
 
 ## Create an virtual environment
 
-### Default env location
+### Default env path
 
 ```bash
 conda create --name env_name python=3.8
@@ -15,7 +15,7 @@ conda deactivate
 conda remove --name env_name --all
 ```
 
-### Specify env location
+### Specify env path
 
 ```bash
 conda create --prefix /path/to/folder/env_name python=3.7
@@ -70,11 +70,3 @@ conda install <package-name>
 - check conda package channels: `conda config --show channels`
 - update a package: `conda update package_name`
   note: see conda cheatsheet for more commands.
-
-## requirements.txt in conda environement
-
-1. make sure the env is activated
-2. to generate file
-   2.1. `conda install pip`
-   2.2. `pip freeze > requirements.txt`
-3. to install packages `pip install -r reqirements.txt`
