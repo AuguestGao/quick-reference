@@ -4,7 +4,23 @@
 
 Anaconda has GUI and install many popular packages along with the installation of Anaconda. Miniconda is the light version of Anaconda which does not have a GUI and has barely no pre-install packages. This guide is focus on miniconda using the conda prompt.
 
-## Create an virtual environment
+## Generate an env yml file for cross platform sharing
+
+```bash
+conda env export --name env_name > environment.yml
+```
+
+## Create an env from a yml file
+
+```bash
+cd to project folder
+
+# in Windows (use conda prompt):
+conda env create --file environment.yml
+
+# in Mac
+conda-env create --file environment.yml
+```
 
 ### Default env path
 
@@ -18,10 +34,10 @@ conda remove --name env_name --all
 ### Specify env path
 
 ```bash
-conda create --prefix /path/to/folder/env_name python=3.7
+conda create --prefix /from/root/path/to/folder/env_name python=3.7
 conda activate /path/to/folder/env_name
 codna deactivate
-conda remove --prefix /path/to/folder/env_name --all
+conda remove --prefix /from/root/path/to/folder/env_name --all
 ```
 
 ## Packages and channels

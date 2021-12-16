@@ -1,0 +1,66 @@
+# Python Guide
+
+### MacOS
+
+1. Download and install [Homebrew](https://brew.sh/)
+2. Install pyenv `brew install pyenv` to allow switching different versions of Python
+3. Install python by using pyenv `pyenv install python_version` e.g. `pyenv install 3.8.12`
+4. Troubleshooting for "C compiler cannot create executables" error
+5. Add pyenv to path ()
+
+```zsh
+# for bash
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bash_profile
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bash_profile
+
+# for zsh
+echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.zshrc
+echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.zshrc
+```
+
+5. Add pyenv init and reset
+
+```zsh
+# for bash
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+reset
+
+# for zsh
+echo -e 'if command -v pyenv 1>/dev/null 2>&1; then\n  eval "$(pyenv init -)"\nfi' >> ~/.zshrc
+reset
+```
+
+6. TBD...
+
+## Windows 10
+
+_Manage Windows softwares_
+
+1. Install [Chocolatey](https://chocolatey.org/), see installation guide for individual use [here](https://chocolatey.org/install#individual)
+2. _(for Windows 10 1905 or newer)_ Disable "App Installer" for Python(s) at `Start > Manage App Execution Aliases`
+
+_Manage Python versions_
+
+3. Install pyenv by using `choco install pyenv`
+4. Install python version `pyenv install 3.8.10`, use `pyenv install --list` to check available Python versions.
+5. Check all installed python versions `pyenv versions` consider to update pyenv if you don't see the version you want to install
+6. Setup global python version `pyenv global 3.8.10`
+   1. to use a version locally, go to the project folder
+   2. `pyenv local python_version`
+7. Uninstall a version by `pyenv uninstall 3.8.10`
+
+_Manage Python Packages_
+
+8. Install Poetry (NPM for Python) by following the guide [here](https://python-poetry.org/docs/#installation), _Restart the terminal to use Poetry_ verify installation is successful `potery --version`
+9. Create a new project with Poetry `poetry new project_name`
+10. create a virtual environment _in the project folder_ `poetry config virtualenvs.in-project true`
+11. Activate virtual env `.venv/Script/activate` and `deactivae` to get out of venv
+12. Install packages by `poetry add package_name`
+
+## References:
+
+1. https://dev.to/dendihandian/pyenv-in-windows-4lpe (post 1 and 5)
+2. https://python-poetry.org/docs/
+3. https://chocolatey.org/
+4. https://brew.sh/
+5. https://www.freecodecamp.org/news/python-version-on-mac-update/
